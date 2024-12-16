@@ -149,4 +149,7 @@ var tf = map[string]interface{}{
 	"cmdEscape": func(s string) string {
 		return strings.Replace(s, " ", `\x20`, -1)
 	},
+	"cmdSpace": func(s string) string {
+		return strings.Replace(s, " ", " ", -1)
+	},
 }

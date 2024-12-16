@@ -79,6 +79,7 @@ func (s *sysv) Install() error {
 	defer f.Close()
 
 	path, err := s.execPath()
+	fmt.Errorf("Init Install exists: %s", path, err)
 	if err != nil {
 		return err
 	}

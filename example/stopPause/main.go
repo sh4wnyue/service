@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/kardianos/service"
+	"github.com/sh4wnyue/service"
 )
 
 var logger service.Logger

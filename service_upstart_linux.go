@@ -16,17 +16,36 @@ import (
 )
 
 func isUpstart() bool {
+	// Check for direct existence of upstart-udev-bridge which is a strong indicator of Upstart.
 	if _, err := os.Stat("/sbin/upstart-udev-bridge"); err == nil {
 		return true
 	}
-	if _, err := os.Stat("/sbin/initctl"); err == nil {
-		if _, out, err := runWithOutput("/sbin/initctl", "--version"); err == nil {
-			if strings.Contains(out, "initctl (upstart") {
-				return true
-			}
-		}
+
+	// Check if initctl exists and belongs to Upstart.
+	if out, err := checkInitctlVersion(); err == nil && strings.Contains(out, "initctl (upstart") {
+		return true
 	}
+
 	return false
+}
+
+func checkInitctlVersion() (string, error) {
+	// First, check if initctl binary exists.
+	if _, err := os.Stat("/sbin/initctl"); err != nil {
+		return "", err
+	}
+
+	// Next, check if /usr/share/upstart exists.
+	if _, err := os.Stat("/usr/share/upstart"); err != nil {
+		return "", err
+	}
+
+	// Finally, run the command and capture output.
+	_, out, err := runWithOutput("/sbin/initctl", "--version")
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
 
 type upstart struct {
